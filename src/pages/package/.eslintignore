@@ -1,0 +1,4 @@
+src/assets*
+src/static*
+*.vue
+*.js
