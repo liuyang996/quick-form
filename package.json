@@ -1,7 +1,7 @@
 {
-  "name": "myvue",
+  "name": "quick-form",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "表单配置化",
   "author": "",
   "private": true,
   "scripts": {
@@ -10,15 +10,13 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "@ylliu/lui": "^0.1.4",
     "async-validator": "^4.0.1",
     "axios": "^0.22.0",
     "element-ui": "^2.15.6",
     "less": "^4.1.2",
     "node-sass": "^4.14.1",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
-    "wti-form": "^1.0.8"
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",
