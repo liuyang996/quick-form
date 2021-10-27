@@ -755,109 +755,17 @@ export default {
                                 }
                             }
                         }
-                        // 地区选择框，三级联动
-                        if (field.type === "area-select") {
-                            const firstParentKey = field.firstParentKey || "10020";
-                            const secondParentKey = field.firstParentKey || "10021";
-                            const thirdParentKey = field.firstParentKey || "10022";
-                            if (parentCodeList.indexOf(firstParentKey) === -1) {
-                                if (
-                                    !(this.dynamicDict[firstParentKey] && this.dynamicDict[firstParentKey].length !== 0)
-                                ) {
-                                    parentCodeList.push(firstParentKey);
-                                    this.$set(this.dynamicDict, firstParentKey, []);
-                                }
-                            }
-                            if (parentCodeList.indexOf(secondParentKey) === -1) {
-                                if (
-                                    !(
-                                        this.dynamicDict[secondParentKey] &&
-                                        this.dynamicDict[secondParentKey].length !== 0
-                                    )
-                                ) {
-                                    parentCodeList.push(secondParentKey);
-                                    this.$set(this.dynamicDict, secondParentKey, []);
-                                }
-                            }
-                            if (parentCodeList.indexOf(thirdParentKey) === -1) {
-                                if (
-                                    !(this.dynamicDict[thirdParentKey] && this.dynamicDict[thirdParentKey].length !== 0)
-                                ) {
-                                    parentCodeList.push(thirdParentKey);
-                                    this.$set(this.dynamicDict, thirdParentKey, []);
-                                }
-                            }
-                        }
                     });
                 }
             });
             if (parentCodeList.length === 0) {
                 return;
             }
-
-            // 是否进行批量请求(多个接口-返回所有的字典请求数据)
-            if (!this.dynamicSelectOption.batchRequest) {
-                // paramsAndUrlList
-                // const newList = new Set(paramsAndUrlList);
-                this.dynamicSelectBatch(parentCodeList, paramsAndUrlList);
-            } else {
-                // 是否进行批量请求(一个接口-批量返回所有的字典请求数据)
-                this.dynamicSelectAll(parentCodeList);
-            }
-        },
-        //一次请求-批量返回所有的字典请求数据
-        dynamicSelectAll(parentCodeList) {
-            // 通过父 key 拿到所有元素
-            let payload = null;
-            // 这里判断是不是 axios 的默认返回数据（未经过请求拦截器处理的）
-            if (this.dynamicSelectOption.queryKey) {
-                payload = {
-                    [this.dynamicSelectOption.queryKey]: parentCodeList
-                };
-            } else {
-                payload = parentCodeList;
-            }
-            // console.log('WtiForm 拉取动态字典');
-            axios
-                .post(this.dynamicSelectOption.dictUrl, payload)
-                .then(res => {
-                    // 兼容性处理
-                    let data;
-                    if (res.request && res.headers) {
-                        data = res.data;
-                    } else {
-                        data = res;
-                    }
-                    if (data.code === 200) {
-                        if (data.data.length > 0) {
-                            // 因为可能多个地方同时调这个接口的原因，为了避免重复将内容添加到里面，所以，
-                            // 这里在赋值之前，需要先判断一下 parentCodeList 的每个值，其对应的 dynamicDict 里的哪一个数组，是否是空的
-                            // 如果不是空的，则将其置为空数组
-                            parentCodeList.forEach(pCode => {
-                                if (this.dynamicDict[pCode].length > 0) {
-                                    this.$set(this.dynamicDict, pCode, []);
-                                }
-                            });
-                            // 加载到结果
-                            data.data.forEach(item => {
-                                // 用每个返回值的 pCode 作为 key，将该项添加到数组里。
-                                // 注：之所以是数组，是因为之前已经初始化过了（parentKey 为 Code）
-                                const pCode = item[this.dynamicSelectOption.parentKey];
-
-                                this.dynamicDict[pCode].push(item);
-                            });
-                        }
-                    } else {
-                        this.$message.error(data.msg);
-                    }
-                })
-                .catch(e => {
-                    console.log("e-", e);
-                    this.$message.error("数据字典加载错误，请刷新页面重试");
-                });
+            // 进行批量请求(多个接口-返回所有的字典请求数据)
+            this.dynamicSelectBatch(paramsAndUrlList);
         },
         //多次请求-分批返回所有的字典请求数据
-        dynamicSelectBatch(parentCodeList, paramsAndUrlList) {
+        dynamicSelectBatch(paramsAndUrlList) {
             console.log("paramsAndUrlList--", paramsAndUrlList);
             const result = [];
             paramsAndUrlList.forEach(item => {
@@ -867,7 +775,7 @@ export default {
 
         getSingleData(paramsItem) {
             axios
-                .post(this.dynamicSelectOption.baseURL + paramsItem.searchUrl, paramsItem.params)
+                .post(this.dynamicSelectOption.dictUrl + paramsItem.searchUrl, paramsItem.params)
                 .then(res => {
                     // 兼容性处理
                     let data;
@@ -882,13 +790,6 @@ export default {
                         }
                         // 加载到结果
                         this.$set(this.dynamicDict, paramsItem.parentKey, data.data);
-                        // data.data.forEach(item => {
-                        //     // 用每个返回值的 pCode 作为 key，将该项添加到数组里。
-                        //     // 注：之所以是数组，是因为之前已经初始化过了（parentKey 为 Code）
-                        //     const pCode = item[paramsItem.parentKey];
-                        //     console.log("item[paramsItem.parentKey]-", item[paramsItem.parentKey]);
-                        //     this.dynamicDict[pCode] && this.dynamicDict[pCode].push(item);
-                        // });
                     } else {
                     }
                 })

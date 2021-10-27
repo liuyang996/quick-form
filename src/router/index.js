@@ -8,6 +8,11 @@ export default new Router({
       path: "/",
       name: "drop",
       component: () => import("@/pages/form")
+    },
+    {
+      path: "/fast_create",
+      name: "fast_create",
+      component: () => import("@/pages/fast_create")
     }
   ]
 });

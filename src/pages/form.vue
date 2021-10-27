@@ -1,6 +1,14 @@
 <template>
   <div>
     <div class="form-wrapper">
+      <p style="padding-top:20px;">
+        <el-button
+          type="primary"
+          style="margin-bottom:20px;"
+          @click="$router.push('/fast_create')"
+          >跳转图形化表单配置</el-button
+        >
+      </p>
       <wti-form
         label-width="100px"
         label-position="right"
@@ -18,7 +26,7 @@
       </div>
     </div>
 
-    <div class="form-wrapper">
+    <!-- <div class="form-wrapper">
       <wti-form
         label-width="100px"
         label-position="right"
@@ -41,7 +49,7 @@
         ref="form3"
       />
       <el-button type="primary" @click="submit('form3')">提交按钮</el-button>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -103,30 +111,30 @@ export default {
               ],
               valueLink: []
             },
-            // {
-            //   options: [
-            //     {
-            //       value: "自由职业者",
-            //       label: "自由职业者"
-            //     },
-            //     {
-            //       value: "体制内",
-            //       label: "体制内"
-            //     },
-            //     {
-            //       value: "打工人",
-            //       label: "打工人"
-            //     },
-            //     {
-            //       value: "其他",
-            //       label: "其他"
-            //     }
-            //   ],
-            //   key: "job",
-            //   label: "职业",
-            //   placeholder: "请选择",
-            //   type: "normal-select"
-            // },
+            {
+              options: [
+                {
+                  value: "自由职业者",
+                  label: "自由职业者"
+                },
+                {
+                  value: "体制内",
+                  label: "体制内"
+                },
+                {
+                  value: "打工人",
+                  label: "打工人"
+                },
+                {
+                  value: "其他",
+                  label: "其他"
+                }
+              ],
+              key: "job",
+              label: "职业",
+              placeholder: "请选择",
+              type: "normal-select"
+            },
             // {
             //   key: "money",
             //   type: "money-input",
@@ -153,24 +161,23 @@ export default {
             //   label: "定金2",
             //   append: "元"
             // },
-            // {
-            //   autoCompleteKeys: [],
-            //   otherSearchKeys: [{ key: "id", value: "1231313213" }],
-            //   searchUrl:
-            //     "https://mock.mengxuegu.com/mock/6163a9208cf3bb7ca95955f4/ceshi/autocomplete",
-            //   searchKey: "search",
-            //   mainShowKey: "value",
-            //   key: "code",
-            //   label: "code码",
-            //   placeholder: "请输入",
-            //   type: "auto-complete-input",
-            //   onSelect(row) {
-            //     console.log("onSelect", row);
-            //   },
-            //   fetchSuggestions(data) {
-            //     console.log("fetchSuggestions", data);
-            //   }
-            // },
+            {
+              autoCompleteKeys: [],
+              otherSearchKeys: [{ key: "id", value: "1231313213" }],
+              searchUrl: "/ceshi/autocomplete",
+              searchKey: "search",
+              mainShowKey: "value",
+              key: "code",
+              label: "code码",
+              placeholder: "请输入",
+              type: "auto-complete-input",
+              onSelect(row) {
+                console.log("onSelect", row);
+              },
+              fetchSuggestions(data) {
+                console.log("fetchSuggestions", data);
+              }
+            },
             // {
             //   key: "reg_date",
             //   label: "注册时间",
@@ -220,7 +227,12 @@ export default {
               linkLevel: 3,
               span: 24,
               label: "这是一个联动下拉框",
-              firstParentKey: "102"
+              searchUrl: "/api/dict3",
+              firstParentKey: "105",
+              queryKey: "id"
+              // params: {
+              //   ceshi: 123
+              // }
             }
             // {
             //   key: "diqu",

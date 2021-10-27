@@ -4,7 +4,9 @@ import Vue from "vue";
 import App from "./App";
 import router from "./router";
 import create from "./utils/Create";
-
+import VueHighlightJS from "vue-highlightjs";
+import "highlight.js/styles/atom-one-dark.css";
+Vue.use(VueHighlightJS);
 import lui from "@ylliu/lui";
 import "@ylliu/lui/lib/lui.css";
 Vue.use(lui);
@@ -26,9 +28,8 @@ const props = {
     default: () => ({
       batchRequest: false, //是否进行批量请求-默认不批量。(批量请求，接口需要配合)
       // 这是字典接口的 url。baseURL 指开发和生产环境下，不同的前缀。
-      dictUrl: `https://mock.mengxuegu.com/mock/6163a9208cf3bb7ca95955f4/ceshi/api/dict`,
+      dictUrl: baseURL,
       //不批量时的接口前缀
-      baseURL,
       // 异步请求时，请求内容是一个对象或一个数组。
       // 如果是对象，那么包含一个 key 和一个数组。
       // 如果是数组，那么只有这个数组。

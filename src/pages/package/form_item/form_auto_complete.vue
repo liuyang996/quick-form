@@ -37,7 +37,7 @@ export default {
                 });
             }
             axios
-                .post(this.item.searchUrl, payload)
+                .post(this.dynamicSelectOption.baseURL + this.item.searchUrl, payload)
                 .then(res => {
                     const data = res.data;
                     console.log(data);

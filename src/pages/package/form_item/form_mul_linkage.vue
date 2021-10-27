@@ -180,30 +180,22 @@ export default {
         // 异步加载字典
         // todo 这里的数据字典请求接口，应该最后合并到一起，由一个专门的数据字典请求管理器去请求，减低接口重复请求的情况
         loadDict(parentCode) {
-            console.log("parentCode----", parentCode);
-            let payload = null;
-            if (this.dynamicSelectOption.queryKey) {
-                if (parentCode instanceof Array) {
-                    payload = {
-                        [this.dynamicSelectOption.queryKey]: [...parentCode]
-                    };
-                } else {
-                    payload = {
-                        [this.dynamicSelectOption.queryKey]: [parentCode]
-                    };
-                }
-            } else {
-                if (parentCode instanceof Array) {
-                    payload = [...parentCode];
-                } else {
-                    payload = [parentCode];
-                }
+            if (!parentCode) {
+                return;
             }
+            let payload = {
+                [this.item.queryKey]: parentCode
+            };
+            if (this.item.params) {
+                payload = Object.assign(payload, this.item.params);
+            }
+            console.log("payload----", payload);
+
             this.$set(this.dynamicDict, parentCode, []);
             // console.log('nul linkage load dict');
             // 否则，根据当前的值，去请求数据字典
             axios
-                .post(this.dynamicSelectOption.dictUrl, payload)
+                .post(this.dynamicSelectOption.dictUrl + this.item.searchUrl, payload)
                 .then(res => {
                     // 兼容性处理
                     let data;
@@ -213,28 +205,15 @@ export default {
                         data = res;
                     }
                     if (data.code === 200) {
-                        if (data.data.length > 0) {
+                        if (data.data && data.data.length > 0) {
                             // 因为可能多个地方同时调这个接口的原因，为了避免重复将内容添加到里面，所以，
                             // 这里在赋值之前，需要先判断一下 parentCodeList 的每个值，其对应的 dynamicDict 里的哪一个数组，是否是空的
                             // 如果不是空的，则将其置为空数组
-                            let list;
-                            if (parentCode instanceof Array) {
-                                list = [...parentCode];
-                            } else {
-                                list = [parentCode];
+                            if (this.dynamicDict[parentCode].length > 0) {
+                                this.$set(this.dynamicDict, parentCode, []);
                             }
-                            list.forEach(pCode => {
-                                if (!this.dynamicDict[pCode] || this.dynamicDict[pCode].length > 0) {
-                                    this.$set(this.dynamicDict, pCode, []);
-                                }
-                            });
-
                             // 加载到结果
-                            data.data.forEach(item => {
-                                const pCode = item[this.dynamicSelectOption.parentKey];
-                                this.dynamicDict[pCode].push(item);
-                            });
-
+                            this.$set(this.dynamicDict, parentCode, data.data);
                             // 强制更新一遍组件的内容
                             this.$forceUpdate();
                         }
